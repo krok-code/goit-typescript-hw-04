@@ -1,14 +1,19 @@
-import React, { useEffect, useRef } from 'react';
+import { ReactNode, useEffect, useRef } from "react";
 
-// Опишіть Props
-export function Observer({ children, onContentEndVisible }: Props) {
+type Props = {
+  children: ReactNode;
+  onContentEndVisiable: () => void;
+};
+
+//Опишіть Props
+export function Observer({ children, onContentEndVisiable }: Props) {
   // Вкажіть правильний тип для useRef зверніть увагу, в який DOM елемент ми його передаємо
-  const endContentRef = useRef(null);
+  const endContactRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Вкажіть правильний тип для options, підказка, клас також можна вказувати як тип
-    const options = {
-      rootMargin: '0px',
+    const options: IntersectionObserverInit = {
+      rootMargin: "0px",
       threshold: 1.0,
       root: null,
     };
@@ -16,25 +21,27 @@ export function Observer({ children, onContentEndVisible }: Props) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.intersectionRatio > 0) {
-          onContentEndVisible();
+          onContentEndVisiable();
           observer.disconnect();
         }
       });
     }, options);
 
-    if (endContentRef.current) {
-      observer.observe(endContentRef.current);
+    if (endContactRef.current) {
+      observer.observe(endContactRef.current);
     }
 
     return () => {
       observer.disconnect();
     };
-  }, [onContentEndVisible]);
+  }, [onContentEndVisiable]);
 
   return (
     <div>
       {children}
-      <div ref={endContentRef} />
+      <div ref={endContactRef} />
     </div>
   );
 }
+
+export default Observer;
